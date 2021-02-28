@@ -3,7 +3,7 @@ import os
 import requests
 import time
 from termcolor import colored
-from fake_useragent import UserAgent
+from fake_headers import Headers
 from utils.utils import setup_logging
 
 GAME_PS5DE = "https://www.game.co.uk/en/playstation-5-digital-edition-2826341"
@@ -19,15 +19,11 @@ ARGOS_NOSTOCK = "https://www.argos.co.uk/vp/oos/ps5.html"
 CURRYS_PS5DE = 'https://www.currys.co.uk/gbuk/gaming/console-gaming/consoles/sony-playstation-5-digital-edition-825-gb-10205198-pdt.html'
 CURRYS_NOSTOCK = "https://www.currys.co.uk/gbuk/gaming/console-gaming/consoles/634_4783_32541_xx_xx/xx-criteria.html"
 
-# https://game.queue-it.net/?c=game&e=liveps&t=https%3A%2F%2Fwww.game.co.uk%2Fen%2Fplaystation-5-digital-edition-2826341%3Ft_origqs%3D&cid=en-GB
-
 
 def check_link(url, product, fail_url):
     item = ' [%s] :: ' % product
-    # ua = UserAgent()
-    # header = {'User Agent': ua.random}
-    # header = {'User Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.93 Safari/537.36'}
-    response = requests.get(url, allow_redirects=True)
+    headers = Headers(os="mac", headers=True).generate()
+    response = requests.get(url, allow_redirects=True, headers=headers)
     if response.status_code == 200 and response.url == fail_url:
         status = colored('OUT OF STOCK', 'red')
         logging.info(shop + item + status)
