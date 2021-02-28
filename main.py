@@ -14,7 +14,7 @@ if __name__ == '__main__':
         gameUk.check_stock('ps5-console')
 
         currys = Currys()
-        currys.check_stock('ps5-digital')
+        currys.check_stock('ps5-anytype')
 
         argos = Argos()
         argos.check_stock('ps5-digital')

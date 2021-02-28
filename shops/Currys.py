@@ -29,13 +29,19 @@ class Currys:
             self.driver.get(self.url)
 
             product_list = self.driver.find_element_by_css_selector('div[data-component="product-list-view"]')
-            products = product_list.find_elements_by_css_selector('article[class="product result-prd"]')
-            product = product_list.find_element_by_css_selector('article[class="product result-prd"]')
-            image = product.find_element_by_tag_name('img')
-            if len(products) == 1 and image.get_attribute('alt') == "PlayStation 4 - 500 GB":
+            product_list_images = product_list.find_elements_by_css_selector('div[class="productListImage"]')
+
+            # Could be enough to check whether 'playstation-4' or playstation-5' is present/absent in link href
+            ps5_found: bool = False
+            target = ""
+            for pli in product_list_images:
+                link = pli.find_element_by_css_selector('a[class="imgC"]')
+                if 'playstation-5' in link.get_attribute('href'):
+                    ps5_found = True
+                    target = link.get_attribute('href')
+            if not ps5_found:
                 status = colored('OUT OF STOCK', 'red')
             else:
-                target = link.get_attribute('href')
                 text = "IN STOCK - Buy Now"
                 clickable_link = f"\u001b]8;;{target}\u001b\\{text}\u001b]8;;\u001b\\"
                 status = colored(clickable_link, 'green')
