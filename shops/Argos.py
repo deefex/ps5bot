@@ -1,33 +1,23 @@
 import logging
 import os
+import platform
+from playsound import playsound
 from termcolor import colored
-from datetime import datetime
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 from utils.utils import setup_browser
 
-# ?clickOrigin=searchbar:search:term:sony+playstation+5+digital+console
-# ?clickOrigin=searchbar:search:term:sony+playstation+5+console
-
 ARGOS_BASE_URL = "https://www.argos.co.uk/search/"
-PS5DE_DIRECT = "https://www.argos.co.uk/search/sony-playstation-5-digital-console/"
-PS5CE_DIRECT = "https://www.argos.co.uk/search/sony-playstation-5-console/"
 
 
 class Argos:
     def __init__(self):
         self.url = ARGOS_BASE_URL
-        self.shop = colored(' [argos]', 'blue')
+        self.shop = colored(' [argos]    ', 'cyan')
         self.driver = setup_browser()
 
     def check_stock(self, ps5_type):
-        item = ' [%s] :: ' % ps5_type
+        item = '::' + colored(' [%s] ' % ps5_type, 'blue') + ':: '
         if ps5_type == "ps5-digital":
             # self.url += "sony-ps4-500gb-console" # test string for success
             self.url += "sony-playstation-5-digital-console/"
@@ -54,11 +44,18 @@ class Argos:
                 text = "IN STOCK - Buy Now"
                 clickable_link = f"\u001b]8;;{target}\u001b\\{text}\u001b]8;;\u001b\\"
                 status = colored(clickable_link, 'green')
-                os.system('say -v Fiona "Playstation 5 available at Argos"')
+                if platform.system() == 'Darwin':
+                    os.system('say -v Fiona "Playstation 5 available at Argos"')
+                else:
+                    playsound('sounds/woohoo.mp3')
                 logging.info(self.shop + item + status)
             except NoSuchElementException as e:
+                # If we can't find the button, barf and move on
                 status = colored("ERROR: NoSuchElementException (nested)", 'yellow')
                 logging.info(self.shop + item + status)
+        except WebDriverException as wde:
+            status = colored(wde, 'yellow')
+            logging.info(self.shop + item + status)
         except Exception as e:
             status = colored(e, 'yellow')
             logging.info(self.shop + item + status)

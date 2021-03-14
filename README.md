@@ -2,7 +2,7 @@
 Playstation 5 Stock Monitor
 
 Note: The purpose of this bot is to passively monitor stock across several UK retailers, giving you an audible alert,
-and a clickable hyperlink when stock is detected. Nothing more.
+and a clickable hyperlink when stock is detected. There's no automated purchasing or any scalping shenanigans.
 
 ## Installation
 Have a copy of python 3.8.x
@@ -12,16 +12,25 @@ Have a copy of python 3.8.x
 - `. venv/bin/activate`
 - `pip install -r requirements.txt`
 
-## Execution
-- `python main.py`
+## Check some things before you run
+Use the following scripts to check whether some key elements will work on your machine:
 
-This will run the main bot - a headless version of chrome and it'll report status on the command line.
+- `python utils/link_check.py` This will check whether you can see clickable hyperlinks in your terminal emulator
+- `python utils/sound_check.py` This will check whether you can hear audible notifications on your machine
 
-- `python direct_link_checks.py`
+## Execution (web-based bot)
+- `python web_bot.py`
+
+This will run the main (web) bot - a headless version of chrome, and it'll report status on the command line.
+
+## Execution (link-based bot)
+- `python link_bot.py`
 
 This primarily uses the python 'requests' package, circumventing traditional browser approaches to try to ascertain 
 whether direct product URLs are being redirected to 'out of stock' or 'generic' pages
 
 ## Issues/TODO
-- The audible alerts will only work on MacOS (I think)
-- Rotating random (free) proxies is possible, but the  response times are pitiful
+- It works great on the Mac.
+- Should use espeak for Linux platforms
+- playsound is a pain for the supporting packages it needs (PyObjC)
+- link_bot works best for Game UK. Argos is a bit flakey (timeouts)

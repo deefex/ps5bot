@@ -1,29 +1,23 @@
 import logging
 import os
+import platform
+from playsound import playsound
 from termcolor import colored
-from datetime import datetime
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 from utils.utils import setup_browser
 
-PS5DE_DIRECT = "https://www.game.co.uk/en/playstation-5-digital-edition-2826341"
-PS5CE_DIRECT = "https://www.game.co.uk/en/playstation-5-console-2826338"
+GAME_PS5_PAGE = 'https://www.game.co.uk/playstation-5'
 
 
 class GameUk:
     def __init__(self):
-        self.url = 'https://www.game.co.uk/playstation-5'
-        self.shop = colored(' [gameuk]', 'blue')
+        self.url = GAME_PS5_PAGE
+        self.shop = colored(' [game]     ', 'cyan')
         self.driver = setup_browser()
 
     def check_stock(self, ps5_type):
-        item = ' [%s] :: ' % ps5_type
+        item = '::' + colored(' [%s] ' % ps5_type, 'blue') + ':: '
         try:
             self.driver.implicitly_wait(60)
             self.driver.get(self.url)
@@ -41,10 +35,16 @@ class GameUk:
                 text = link.get_attribute('text').upper()
                 clickable_link = f"\u001b]8;;{target}\u001b\\{text}\u001b]8;;\u001b\\"
                 status = colored(clickable_link, 'green')
-                os.system('say -v Fiona "Playstation 5 available at Game UK"')  # Fiona is Scottish :-)
+                if platform.system() == 'Darwin':
+                    os.system('say -v Fiona "Playstation 5 available at Game UK"')
+                else:
+                    playsound('sounds/woohoo.mp3')
             logging.info(self.shop + item + status)
-        except NoSuchElementException as e:
-            status = colored("ERROR: NoSuchElementException", 'yellow')
+        except NoSuchElementException as nsee:
+            status = colored(nsee, 'yellow')
+            logging.info(self.shop + item + status)
+        except WebDriverException as wde:
+            status = colored(wde, 'yellow')
             logging.info(self.shop + item + status)
         except Exception as e:
             status = colored(e, 'yellow')
