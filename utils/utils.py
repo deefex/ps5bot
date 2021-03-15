@@ -1,5 +1,8 @@
 import logging
+import os
+import platform
 from selenium import webdriver
+from termcolor import colored
 from fake_useragent import UserAgent
 
 
@@ -19,3 +22,28 @@ def setup_logging():
 
 def shutdown_logging():
     logging.shutdown()
+
+
+def format_hyperlink(target: str, text: str) -> str:
+    clickable_link = f"\u001b]8;;{target}\u001b\\{text}\u001b]8;;\u001b\\"
+    return colored(clickable_link, 'green')
+
+
+def log_result(shop, item, status):
+    formatted_shop = colored(f'[{shop}]', 'cyan')
+    formatted_item = colored(f'[{item}]', 'blue')
+    if status == 'OOS':
+        formatted_status = colored('OUT OF STOCK', 'red')
+    elif '\u001b' in status:
+        formatted_status = colored(status, 'green')
+        play_audible_alert()
+    else:
+        formatted_status = colored(status, 'yellow')
+    logging.info(formatted_shop + ' :: ' + formatted_item + ' :: ' + formatted_status)
+
+
+def play_audible_alert():
+    if platform.system() == 'Darwin':
+        os.system('say -v Fiona "Playstation 5 located"')
+    else:
+        playsound('sounds/woohoo.mp3')

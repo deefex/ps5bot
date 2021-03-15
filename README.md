@@ -30,7 +30,7 @@ This primarily uses the python 'requests' package, circumventing traditional bro
 whether direct product URLs are being redirected to 'out of stock' or 'generic' pages
 
 ## Issues/TODO
-- It works great on the Mac.
-- Should use espeak for Linux platforms
-- playsound is a pain for the supporting packages it needs (PyObjC)
+- It works great on the Mac :-)
+- Should update to use espeak for Linux platforms
+- playsound is a pain for the supporting packages it needs (PyObjC) - alternatives?
 - link_bot works best for Game UK. Argos is a bit flakey (timeouts)

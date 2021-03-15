@@ -1,11 +1,6 @@
-import logging
-import os
-import platform
-from playsound import playsound
-from termcolor import colored
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
-from utils.utils import setup_browser
+from utils.utils import setup_browser, format_hyperlink, log_result
 
 CURRYS_BASE_URL = 'https://www.currys.co.uk/gbuk/sony-gaming/console-gaming/console-gaming/consoles/634_4783_32541_49_xx/xx-criteria.html'
 
@@ -13,11 +8,10 @@ CURRYS_BASE_URL = 'https://www.currys.co.uk/gbuk/sony-gaming/console-gaming/cons
 class Currys:
     def __init__(self):
         self.url = CURRYS_BASE_URL
-        self.shop = colored(' [currys]   ', 'cyan')
+        self.shop = 'currys'
         self.driver = setup_browser()
 
     def check_stock(self, ps5_type):
-        item = '::' + colored(' [%s] ' % ps5_type, 'blue') + ':: '
         try:
             self.driver.implicitly_wait(60)
             self.driver.get(self.url)
@@ -34,25 +28,16 @@ class Currys:
                     ps5_found = True
                     target = link.get_attribute('href')
             if not ps5_found:
-                status = colored('OUT OF STOCK', 'red')
+                status = 'OOS'
             else:
-                text = "IN STOCK - Buy Now"
-                clickable_link = f"\u001b]8;;{target}\u001b\\{text}\u001b]8;;\u001b\\"
-                status = colored(clickable_link, 'green')
-                if platform.system() == 'Darwin':
-                    os.system('say -v Fiona "Playstation 5 available at Currys"')
-                else:
-                    playsound('sounds/woohoo.mp3')
-            logging.info(self.shop + item + status)
+                status = format_hyperlink(target, 'IN STOCK')
+            log_result(self.shop, ps5_type, status)
         except NoSuchElementException as nsee:
-            status = colored(nsee, 'yellow')
-            logging.info(self.shop + item + status)
+            log_result(self.shop, ps5_type, nsee)
         except WebDriverException as wde:
-            status = colored(wde, 'yellow')
-            logging.info(self.shop + item + status)
+            log_result(self.shop, ps5_type, wde)
         except Exception as e:
-            status = colored(e, 'yellow')
-            logging.info(self.shop + item + status)
+            log_result(self.shop, ps5_type, e)
         finally:
             self.driver.close()
 
