@@ -30,7 +30,5 @@ This primarily uses the python 'requests' package, circumventing traditional bro
 whether direct product URLs are being redirected to 'out of stock' or 'generic' pages
 
 ## Issues/TODO
-- Exception handling. Could be tidier.
-- KeyboardInterrupt for graceful termination
 - Perhaps use espeak for Linux platform
 - playsound is a pain for the supporting packages it needs (PyObjC) - alternatives?

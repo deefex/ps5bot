@@ -1,4 +1,5 @@
 import requests
+import sys
 import time
 from fake_headers import Headers
 from utils.utils import setup_logging, format_hyperlink, log_result
@@ -79,8 +80,12 @@ def link_checker(shop):
 if __name__ == '__main__':
     setup_logging()
 
-    while True:
-        link_checker(game)
-        link_checker(argos)
-        link_checker(currys)
-        time.sleep(3)
+    try:
+        while True:
+            link_checker(game)
+            link_checker(argos)
+            link_checker(currys)
+            time.sleep(3)
+    except KeyboardInterrupt as kbi:
+        print("Keyboard Interrupt. Exiting link_bot.py...")
+        sys.exit(1)

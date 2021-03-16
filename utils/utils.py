@@ -34,12 +34,14 @@ def log_result(shop, item, status):
     formatted_item = colored(f'[{item}]', 'blue')
     if status == 'OOS':
         formatted_status = colored('OUT OF STOCK', 'red')
+        logging.info(formatted_shop + ' :: ' + formatted_item + ' :: ' + formatted_status)
     elif '\u001b' in status:
         formatted_status = colored(status, 'green')
+        logging.info(formatted_shop + ' :: ' + formatted_item + ' :: ' + formatted_status)
         play_audible_alert()
     else:
         formatted_status = colored(status, 'yellow')
-    logging.info(formatted_shop + ' :: ' + formatted_item + ' :: ' + formatted_status)
+        logging.error(formatted_shop + ' :: ' + formatted_item + ' :: ' + formatted_status)
 
 
 def play_audible_alert():
